@@ -1,0 +1,18 @@
+{
+  "timestamp": "2024-01-15T14:30:00Z",
+  "project": "ExampleProject",
+  "cwd": "/path/to/project",
+  "os": "Linux",
+  "shell": "bash",
+  "git": {
+    "present": true,
+    "branch": "feature/auth",
+    "status": [" M api/auth/middleware.ts"],
+    "recent_commits": ["a1b2c3d jwt refresh token"],
+    "changed_files": ["api/auth/middleware.ts","api/auth/routes.ts"]
+  },
+  "files_recent": ["api/auth/middleware.ts"],
+  "todos": [{"file":"api/auth/routes.ts","line":42,"text":"TODO: rate limiting"}],
+  "note": "Implementei o sistema de autenticação"
+}
+

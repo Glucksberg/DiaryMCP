@@ -1,0 +1,6 @@
+# DiaryMCP
+.diary/io/
+.diary/data/entries/
+.diary/scripts/capture.sh
+.diary/scripts/capture.ps1
+.diary/scripts/capture.bat

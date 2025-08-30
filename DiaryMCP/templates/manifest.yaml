@@ -1,0 +1,56 @@
+version: 1.0
+project:
+  name: "[NOME_DO_PROJETO]"
+  install_date: "[DATA_INSTALACAO_ISO]"
+  default_branch: "[BRANCH_PADRAO]"
+  language: "[LINGUAGEM_PRINCIPAL]"
+  paths:
+    root: "."
+    diary: ".diary"
+    important:
+      - "src/"
+      - "tests/"
+      - "docs/"
+protocol:
+  version: 1
+  messages:
+    inbox: ".diary/io/inbox.ndjson"
+    outbox: ".diary/io/outbox.ndjson"
+    state: ".diary/io/state.json"
+data:
+  index: ".diary/data/index.json"
+  tags: ".diary/data/tags.json"
+  entries: ".diary/data/entries"
+  quarantine: ".diary/.quarantine"
+fallback_modes:
+  no_git:
+    use: filesystem_timestamps
+    track: file_modifications_only
+  corrupted_data:
+    action: quarantine_and_rebuild
+    preserve: user_notes_always
+privacy:
+  exclude_file: ".diaryprivate"
+context_layers:
+  immediate:
+    - comandos_terminal
+    - arquivos_salvos
+    - tabs_abertas
+  session:
+    - branches_visitadas
+    - testes_rodados
+    - builds_executados
+  historical:
+    - padroes_detectados
+    - horarios_produtivos
+    - ferramentas_preferidas
+analysis:
+  velocity_tracking: true
+  pattern_detection: true
+  blocker_analysis: true
+  success_patterns: true
+ui:
+  guide_mode_default: true
+plugins:
+  directory: "DiaryMCP/plugins"
+  enabled: []

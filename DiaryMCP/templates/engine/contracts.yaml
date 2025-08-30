@@ -1,0 +1,99 @@
+version: 1
+
+schemas:
+  state:
+    type: object
+    required: [version, last_entry, stats]
+    properties:
+      version: { type: string }
+      last_entry: { type: [string, 'null'] }
+      stats:
+        type: object
+        required: [entries]
+        properties:
+          entries: { type: integer }
+
+  index:
+    type: object
+    required: [version, project, entries, edges]
+    properties:
+      version: { type: string }
+      project: { type: string }
+      entries: { type: array, items: { $ref: '#/schemas/entryRef' } }
+      edges: { type: array, items: { $ref: '#/schemas/edge' } }
+
+  entryRef:
+    type: object
+    required: [id, date, time, path, branch]
+    properties:
+      id: { type: string } # YYYY-MM-DD/HH-MM-SS
+      date: { type: string }
+      time: { type: string }
+      path: { type: string }
+      branch: { type: [string, 'null'] }
+      tags: { type: array, items: { type: string } }
+
+  edge:
+    type: object
+    required: [type, from, to]
+    properties:
+      type: { type: string } # temporal | branch:<name> | file:<path> | tag:<tag>
+      from: { type: string } # entryRef.id
+      to: { type: string }
+
+  context:
+    type: object
+    required: [timestamp, project]
+    properties:
+      timestamp: { type: string }
+      project: { type: string }
+      cwd: { type: string }
+      os: { type: string }
+      shell: { type: string }
+      git:
+        type: object
+        properties:
+          present: { type: boolean }
+          branch: { type: [string, 'null'] }
+          status: { type: array, items: { type: string } }
+          recent_commits: { type: array, items: { type: string } }
+          changed_files: { type: array, items: { type: string } }
+      files_recent:
+        type: array
+        items: { type: string }
+      todos:
+        type: array
+        items: { type: object, properties: { file:{type:string}, line:{type:integer}, text:{type:string} } }
+      note: { type: [string, 'null'] }
+
+  inboxMessage:
+    type: object
+    required: [version, type, id, timestamp]
+    properties:
+      version: { type: string }
+      type: { type: string }
+      id: { type: string }
+      timestamp: { type: string }
+      payload: { type: object }
+      metadata: { type: object }
+
+  outboxMessage:
+    type: object
+    required: [version, type, ref, timestamp]
+    properties:
+      version: { type: string }
+      type: { type: string }
+      ref: { type: string } # id do inbox
+      timestamp: { type: string }
+      status: { type: string } # ok | error
+      data: { type: object }
+      error: { type: [string, 'null'] }
+
+migrations:
+  # Exemplo de migração futura quando version > 1
+  - from: 1
+    to: 2
+    steps:
+      - description: "Renomear campo padroes_detectados -> padrões_detectados"
+        action: noop
+

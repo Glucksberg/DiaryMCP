@@ -1,0 +1,12 @@
+{
+  "version": "1.0",
+  "project": "ExampleProject",
+  "entries": [
+    {"id":"2024-01-15/14-30-00","date":"2024-01-15","time":"14-30-00","path":".diary/data/entries/2024-01-15/14-30-00","branch":"feature/auth","tags":["feature:auth","insight"]}
+  ],
+  "edges": [
+    {"type":"temporal","from":"2024-01-15/14-30-00","to":"2024-01-14/10-10-00"},
+    {"type":"branch:feature/auth","from":"2024-01-15/14-30-00","to":"2024-01-12/09-00-00"}
+  ]
+}
+
