@@ -1,0 +1,17 @@
+{
+  "timestamp": "2025-08-30T08:16:47+00:00",
+  "project": "DiaryMCP-codex",
+  "cwd": "/root/DiaryMCP-codex",
+  "os": "Linux",
+  "shell": "bash",
+  "git": {
+    "present": true,
+    "branch": "codex",
+    "status": [],
+    "recent_commits": ["1150988 chore: initialize repo and add Guide Mode (DiaryMCP)"],
+    "changed_files": []
+  },
+  "files_recent": [".gitignore","DiaryMCP/plugins/slack_mentions.md","DiaryMCP/plugins/calendar_context.md","DiaryMCP/plugins/music_mood.md","DiaryMCP/instalar.md","DiaryMCP/templates/engine/prompts/analyze.md","DiaryMCP/templates/engine/prompts/generate.md","DiaryMCP/templates/engine/prompts/capture.md","DiaryMCP/templates/engine/prompts/guide.md","DiaryMCP/templates/engine/contracts.yaml","DiaryMCP/templates/engine/rules.md","DiaryMCP/templates/scripts/capture.ps1","DiaryMCP/templates/scripts/capture.sh","DiaryMCP/templates/scripts/capture.bat","DiaryMCP/templates/ativar.md","DiaryMCP/templates/manifest.yaml","DiaryMCP/docs/protocol.md","DiaryMCP/examples/data/tags.json","DiaryMCP/examples/data/entries/2024-01-15/14-30-00/tech.md","DiaryMCP/examples/data/entries/2024-01-15/14-30-00/entry.md","DiaryMCP/examples/data/entries/2024-01-15/14-30-00/story.md","DiaryMCP/examples/data/entries/2024-01-15/14-30-00/context.json","DiaryMCP/examples/data/index.json"],
+  "todos": [{"file":"./DiaryMCP/examples/data/entries/2024-01-15/14-30-00/context.json","line":15,"text":"  \"todos\": [{\"file\":\"api/auth/routes.ts\",\"line\":42,\"text\":\"TODO: rate limiting\"}],"},{"file":"./DiaryMCP/templates/engine/rules.md","line":12,"text":"  - TODO/FIXME recém-detectados (até 200 linhas)"},{"file":"./DiaryMCP/templates/scripts/capture.sh","line":62,"text":"# TODO/FIXME scan (limit ~200)"},{"file":"./DiaryMCP/templates/scripts/capture.sh","line":63,"text":"mapfile -t TODO_LINES < <(rg -n --no-heading -e \"TODO|FIXME\" \\"},{"file":"./DiaryMCP/templates/scripts/capture.sh","line":97,"text":"  for line in \"${TODO_LINES[@]}\"; do"},{"file":"./DiaryMCP/templates/scripts/capture.ps1","line":45,"text":"# TODO/FIXME scan (best-effort)"},{"file":"./DiaryMCP/templates/scripts/capture.ps1","line":48,"text":"  $TodoLines = git grep -n -e \"TODO\" -e \"FIXME\" HEAD 2>$null"},{"file":"./DiaryMCP/templates/engine/prompts/capture.md","line":16,"text":"4) TODO/FIXME: buscar em arquivos texto até 200 resultados, coletando `file`, `line`, `text`."}],
+  "note": "Conversa: arquitetura DiaryMCP; Guide Mode adicionado; captura simplificada; git init + branch codex + push. Decisao: priorizar Software Vivo (IA como runtime); alternativa: codigo com IA fazendo o dificil."
+}
