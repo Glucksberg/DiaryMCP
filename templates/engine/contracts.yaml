@@ -1,0 +1,713 @@
+# DiaryMCP - Contratos de Dados
+# Definição de esquemas e estruturas de dados
+
+---
+
+# Versão do Schema
+schema_version: "1.0"
+protocol_version: "1.0"
+
+# =============================================================================
+# ESTRUTURAS PRINCIPAIS
+# =============================================================================
+
+## Entry - Entrada Principal do Diário
+Entry:
+  type: object
+  required: [id, timestamp, context, summary]
+  properties:
+    id:
+      type: string
+      pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}-\\d{2}-\\d{2}$"
+      description: "Timestamp no formato YYYY-MM-DDTHH-MM-SS"
+      
+    timestamp:
+      type: string
+      format: date-time
+      description: "ISO-8601 timestamp da captura"
+      
+    context:
+      $ref: "#/Context"
+      description: "Contexto técnico capturado"
+      
+    summary:
+      type: string
+      maxLength: 500
+      description: "Resumo da sessão em uma frase"
+      
+    user_note:
+      type: string
+      maxLength: 2000
+      description: "Nota livre fornecida pelo usuário"
+      
+    tags:
+      type: array
+      items:
+        type: string
+        pattern: "^[a-z0-9-]+$"
+      description: "Tags automáticas e manuais"
+      
+    files:
+      type: array
+      items:
+        $ref: "#/FileInfo"
+      description: "Arquivos modificados na sessão"
+      
+    metrics:
+      $ref: "#/SessionMetrics"
+      description: "Métricas da sessão"
+      
+    connections:
+      type: array
+      items:
+        $ref: "#/Connection"
+      description: "Links com outras entradas"
+
+## Context - Contexto Técnico Capturado
+Context:
+  type: object
+  properties:
+    git:
+      $ref: "#/GitContext"
+      description: "Informações do Git"
+      
+    files:
+      $ref: "#/FileContext"
+      description: "Estado dos arquivos"
+      
+    environment:
+      $ref: "#/EnvironmentContext"
+      description: "Contexto do ambiente"
+      
+    temporal:
+      $ref: "#/TemporalContext"
+      description: "Informações temporais"
+
+## GitContext - Estado do Git
+GitContext:
+  type: object
+  properties:
+    available:
+      type: boolean
+      description: "Se Git está disponível"
+      
+    branch:
+      type: string
+      description: "Branch atual"
+      
+    status:
+      type: object
+      properties:
+        modified:
+          type: array
+          items:
+            type: string
+          description: "Arquivos modificados"
+          
+        added:
+          type: array
+          items:
+            type: string
+          description: "Arquivos adicionados"
+          
+        deleted:
+          type: array
+          items:
+            type: string
+          description: "Arquivos deletados"
+          
+        untracked:
+          type: array
+          items:
+            type: string
+          description: "Arquivos não rastreados"
+          
+    commits_since_last:
+      type: array
+      items:
+        $ref: "#/CommitInfo"
+      description: "Commits desde a última captura"
+      
+    stash:
+      type: array
+      items:
+        type: string
+      description: "Lista de stashes"
+
+## CommitInfo - Informação de Commit
+CommitInfo:
+  type: object
+  required: [hash, message, timestamp]
+  properties:
+    hash:
+      type: string
+      minLength: 7
+      maxLength: 40
+      description: "Hash do commit"
+      
+    message:
+      type: string
+      description: "Mensagem do commit"
+      
+    timestamp:
+      type: string
+      format: date-time
+      description: "Timestamp do commit"
+      
+    author:
+      type: string
+      description: "Autor do commit"
+      
+    files_changed:
+      type: integer
+      description: "Número de arquivos alterados"
+
+## FileContext - Contexto de Arquivos
+FileContext:
+  type: object
+  properties:
+    recent_modifications:
+      type: array
+      items:
+        $ref: "#/FileInfo"
+      description: "Arquivos modificados recentemente"
+      
+    todos_found:
+      type: array
+      items:
+        $ref: "#/TodoItem"
+      description: "TODOs encontrados no código"
+      
+    fixmes_found:
+      type: array
+      items:
+        $ref: "#/FixmeItem"
+      description: "FIXMEs encontrados no código"
+
+## FileInfo - Informação de Arquivo
+FileInfo:
+  type: object
+  required: [path, modified_at]
+  properties:
+    path:
+      type: string
+      description: "Caminho relativo do arquivo"
+      
+    modified_at:
+      type: string
+      format: date-time
+      description: "Timestamp da modificação"
+      
+    size:
+      type: integer
+      description: "Tamanho em bytes"
+      
+    type:
+      type: string
+      enum: [source, test, config, doc, other]
+      description: "Tipo do arquivo"
+      
+    language:
+      type: string
+      description: "Linguagem detectada"
+      
+    lines_added:
+      type: integer
+      description: "Linhas adicionadas (se disponível)"
+      
+    lines_removed:
+      type: integer
+      description: "Linhas removidas (se disponível)"
+
+## TodoItem - Item TODO encontrado
+TodoItem:
+  type: object
+  required: [file, line, text]
+  properties:
+    file:
+      type: string
+      description: "Arquivo onde foi encontrado"
+      
+    line:
+      type: integer
+      description: "Número da linha"
+      
+    text:
+      type: string
+      description: "Texto do TODO"
+      
+    priority:
+      type: string
+      enum: [low, medium, high, urgent]
+      description: "Prioridade detectada"
+
+## FixmeItem - Item FIXME encontrado
+FixmeItem:
+  type: object
+  required: [file, line, text]
+  properties:
+    file:
+      type: string
+      description: "Arquivo onde foi encontrado"
+      
+    line:
+      type: integer
+      description: "Número da linha"
+      
+    text:
+      type: string
+      description: "Texto do FIXME"
+      
+    severity:
+      type: string
+      enum: [low, medium, high, critical]
+      description: "Severidade detectada"
+
+## EnvironmentContext - Contexto do Ambiente
+EnvironmentContext:
+  type: object
+  properties:
+    working_directory:
+      type: string
+      description: "Diretório de trabalho"
+      
+    project_root:
+      type: string
+      description: "Raiz do projeto"
+      
+    os:
+      type: string
+      description: "Sistema operacional"
+      
+    shell:
+      type: string
+      description: "Shell utilizado"
+      
+    editor:
+      type: string
+      description: "Editor detectado"
+
+## TemporalContext - Contexto Temporal
+TemporalContext:
+  type: object
+  properties:
+    session_start:
+      type: string
+      format: date-time
+      description: "Início estimado da sessão"
+      
+    session_duration:
+      type: integer
+      description: "Duração em minutos"
+      
+    time_of_day:
+      type: string
+      enum: [morning, afternoon, evening, night]
+      description: "Período do dia"
+      
+    day_of_week:
+      type: string
+      enum: [monday, tuesday, wednesday, thursday, friday, saturday, sunday]
+      description: "Dia da semana"
+
+## SessionMetrics - Métricas da Sessão
+SessionMetrics:
+  type: object
+  properties:
+    productivity_score:
+      type: number
+      minimum: 0
+      maximum: 100
+      description: "Score de produtividade (0-100)"
+      
+    files_touched:
+      type: integer
+      description: "Número de arquivos tocados"
+      
+    commits_made:
+      type: integer
+      description: "Número de commits feitos"
+      
+    lines_changed:
+      type: integer
+      description: "Total de linhas modificadas"
+      
+    todos_added:
+      type: integer
+      description: "TODOs adicionados"
+      
+    todos_completed:
+      type: integer
+      description: "TODOs completados"
+
+## Connection - Conexão entre Entradas
+Connection:
+  type: object
+  required: [target_id, type, weight]
+  properties:
+    target_id:
+      type: string
+      description: "ID da entrada conectada"
+      
+    type:
+      type: string
+      enum: [temporal, branch, files, semantic, thread]
+      description: "Tipo de conexão"
+      
+    weight:
+      type: number
+      minimum: 0
+      maximum: 1
+      description: "Força da conexão (0-1)"
+      
+    reason:
+      type: string
+      description: "Motivo da conexão"
+      
+    metadata:
+      type: object
+      description: "Metadados específicos do tipo"
+
+# =============================================================================
+# ESTRUTURAS DE ÍNDICES
+# =============================================================================
+
+## Index - Índice Principal
+Index:
+  type: object
+  required: [project, version, entries, edges]
+  properties:
+    project:
+      type: string
+      description: "Nome do projeto"
+      
+    version:
+      type: string
+      description: "Versão do índice"
+      
+    created_at:
+      type: string
+      format: date-time
+      description: "Data de criação"
+      
+    last_updated:
+      type: string
+      format: date-time
+      description: "Última atualização"
+      
+    entries:
+      type: array
+      items:
+        $ref: "#/EntryIndex"
+      description: "Índice de entradas"
+      
+    edges:
+      type: array
+      items:
+        $ref: "#/EdgeIndex"
+      description: "Índice de conexões"
+      
+    stats:
+      $ref: "#/IndexStats"
+      description: "Estatísticas do índice"
+
+## EntryIndex - Entrada no Índice
+EntryIndex:
+  type: object
+  required: [id, timestamp, summary]
+  properties:
+    id:
+      type: string
+      description: "ID da entrada"
+      
+    timestamp:
+      type: string
+      format: date-time
+      description: "Timestamp da entrada"
+      
+    summary:
+      type: string
+      description: "Resumo da entrada"
+      
+    tags:
+      type: array
+      items:
+        type: string
+      description: "Tags da entrada"
+      
+    branch:
+      type: string
+      description: "Branch Git"
+      
+    files_count:
+      type: integer
+      description: "Número de arquivos"
+      
+    productivity_score:
+      type: number
+      description: "Score de produtividade"
+
+## EdgeIndex - Conexão no Índice
+EdgeIndex:
+  type: object
+  required: [from, to, type, weight]
+  properties:
+    from:
+      type: string
+      description: "ID da entrada origem"
+      
+    to:
+      type: string
+      description: "ID da entrada destino"
+      
+    type:
+      type: string
+      description: "Tipo de conexão"
+      
+    weight:
+      type: number
+      description: "Peso da conexão"
+      
+    created_at:
+      type: string
+      format: date-time
+      description: "Quando a conexão foi criada"
+
+## IndexStats - Estatísticas do Índice
+IndexStats:
+  type: object
+  properties:
+    total_entries:
+      type: integer
+      description: "Total de entradas"
+      
+    total_connections:
+      type: integer
+      description: "Total de conexões"
+      
+    average_productivity:
+      type: number
+      description: "Produtividade média"
+      
+    most_productive_day:
+      type: string
+      description: "Dia mais produtivo"
+      
+    most_active_branch:
+      type: string
+      description: "Branch mais ativo"
+      
+    top_tags:
+      type: array
+      items:
+        type: object
+        properties:
+          tag:
+            type: string
+          count:
+            type: integer
+      description: "Tags mais usadas"
+
+# =============================================================================
+# ESTRUTURAS DE TAGS
+# =============================================================================
+
+## TagIndex - Índice de Tags
+TagIndex:
+  type: object
+  required: [tags, categories]
+  properties:
+    tags:
+      type: object
+      additionalProperties:
+        $ref: "#/TagInfo"
+      description: "Informações por tag"
+      
+    categories:
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          type: string
+      description: "Categorias de tags"
+      
+    last_updated:
+      type: string
+      format: date-time
+      description: "Última atualização"
+
+## TagInfo - Informação de Tag
+TagInfo:
+  type: object
+  required: [count, entries]
+  properties:
+    count:
+      type: integer
+      description: "Número de ocorrências"
+      
+    entries:
+      type: array
+      items:
+        type: string
+      description: "IDs das entradas"
+      
+    related:
+      type: array
+      items:
+        type: string
+      description: "Tags relacionadas"
+      
+    first_used:
+      type: string
+      format: date-time
+      description: "Primeira vez usada"
+      
+    last_used:
+      type: string
+      format: date-time
+      description: "Última vez usada"
+
+# =============================================================================
+# ESTRUTURAS DE IO
+# =============================================================================
+
+## Command - Comando de Entrada
+Command:
+  type: object
+  required: [id, type, timestamp]
+  properties:
+    id:
+      type: string
+      description: "ID único do comando"
+      
+    type:
+      type: string
+      enum: [capture, status, search, connect, report, rebuild, cleanup]
+      description: "Tipo do comando"
+      
+    timestamp:
+      type: string
+      format: date-time
+      description: "Timestamp do comando"
+      
+    payload:
+      type: object
+      description: "Dados específicos do comando"
+      
+    user_id:
+      type: string
+      description: "Identificador do usuário"
+      
+    metadata:
+      type: object
+      description: "Metadados adicionais"
+
+## Response - Resposta de Saída  
+Response:
+  type: object
+  required: [command_id, status, timestamp]
+  properties:
+    command_id:
+      type: string
+      description: "ID do comando relacionado"
+      
+    status:
+      type: string
+      enum: [success, error, partial]
+      description: "Status da execução"
+      
+    timestamp:
+      type: string
+      format: date-time
+      description: "Timestamp da resposta"
+      
+    data:
+      type: object
+      description: "Dados da resposta"
+      
+    error:
+      type: string
+      description: "Mensagem de erro se aplicável"
+      
+    execution_time:
+      type: number
+      description: "Tempo de execução em ms"
+
+## State - Estado do Sistema
+State:
+  type: object
+  required: [current_session, last_capture]
+  properties:
+    current_session:
+      type: string
+      description: "ID da sessão atual"
+      
+    last_capture:
+      type: string
+      format: date-time
+      description: "Última captura realizada"
+      
+    active_branch:
+      type: string
+      description: "Branch ativo"
+      
+    pending_commands:
+      type: integer
+      description: "Comandos pendentes"
+      
+    system_health:
+      type: string
+      enum: [healthy, degraded, error]
+      description: "Estado do sistema"
+      
+    last_updated:
+      type: string
+      format: date-time
+      description: "Última atualização"
+
+# =============================================================================
+# VALIDAÇÕES E CONSTRAINTS
+# =============================================================================
+
+## Constraints Globais
+constraints:
+  max_entry_size: 10485760  # 10MB
+  max_user_note_length: 2000
+  max_summary_length: 500
+  max_tags_per_entry: 20
+  max_files_per_entry: 100
+  max_connections_per_entry: 50
+  
+## Patterns de Validação
+patterns:
+  entry_id: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}-\\d{2}-\\d{2}$"
+  tag_name: "^[a-z0-9-]+$"
+  file_path: "^[^\\0]+$"
+  git_hash: "^[a-f0-9]{7,40}$"
+
+## Formatos de Data
+date_formats:
+  entry_id: "YYYY-MM-DDTHH-MM-SS"
+  iso_datetime: "YYYY-MM-DDTHH:mm:ss.sssZ"
+  display_date: "DD/MM/YYYY HH:mm"
+
+---
+
+# Notas de Implementação
+
+## Versionamento
+- Todos os schemas devem incluir `schema_version`
+- Mudanças breaking devem incrementar versão major
+- Mudanças compatíveis incrementam versão minor
+
+## Validação
+- Todos os dados devem ser validados contra estes schemas
+- Dados inválidos devem ser rejeitados ou sanitizados
+- Logs de validação devem ser mantidos para debug
+
+## Extensibilidade
+- Campos `metadata` permitem extensões futuras
+- Novos tipos de `Connection` podem ser adicionados
+- Novos tipos de `Command` podem ser implementados
+
+*Estes contratos garantem consistência e interoperabilidade entre todas as partes do sistema DiaryMCP.*

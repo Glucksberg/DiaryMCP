@@ -1,0 +1,48 @@
+# DiaryMCP - Arquivos a ignorar
+
+# Dados sensíveis e temporários
+*.log
+*.tmp
+.env
+.env.local
+.env.*.local
+
+# Arquivos de sistema
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Dados de teste e desenvolvimento
+test-data/
+temp/
+scratch/
+
+# Backups automáticos
+*.backup
+*.bak
+*~
+
+# Arquivos específicos do editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node modules (se houver desenvolvimento JS)
+node_modules/
+
+# Python cache (se houver desenvolvimento Python)
+__pycache__/
+*.pyc
+*.pyo
+
+# Dados pessoais que não devem ser commitados
+personal-notes/
+private/
+
+# Arquivos de configuração local específicos
+local-config.*
