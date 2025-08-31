@@ -7,6 +7,48 @@
 
 Capturar o contexto completo de sessões de programação e gerar narrativas técnicas e pessoais que facilitam a retomada do trabalho e o aprendizado contínuo.
 
+## 🚀 REGRAS DE OTIMIZAÇÃO DE TOKENS (CRÍTICO!)
+
+### 📊 Carregamento Seletivo de Histórico
+```yaml
+# Para CAPTURA de nova sessão:
+capture_optimization:
+  load_for_connections: 
+    - últimas_5_sessões: summary.json only
+    - mesmo_branch: summary.json das últimas 10
+    - index.json: sempre (metadados)
+    
+  NEVER_load:
+    - entry.md de sessões antigas
+    - tech.md de sessões antigas  
+    - story.md de sessões antigas
+    - context.json completo de sessões antigas
+
+# Para COMANDOS de consulta:  
+command_optimization:
+  status: 
+    - load: index.json + tags.json only
+    - calculate: metrics from summaries
+    
+  search_term:
+    - first: search in index.json
+    - then: load summary.json of matches only
+    - last: full entry.md only if needed
+    
+  report_period:
+    - load: summary.json de entradas no período
+    - aggregate: metrics sem abrir conteúdo completo
+```
+
+### ⚡ Regra de Ouro dos 30 Dias
+```yaml
+summary_usage_rule:
+  - sessões > 30_dias: IA lê APENAS summary.json
+  - sessões <= 30_dias: IA pode ler arquivos completos SE necessário
+  - summary.json é OBRIGATÓRIO em toda captura
+  - summary.json MAX 1000 tokens sempre
+```
+
 ## 📋 REGRAS DE CAPTURA
 
 ### 1. Contexto Git (Prioridade Alta)

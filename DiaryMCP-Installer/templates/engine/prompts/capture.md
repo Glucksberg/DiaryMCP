@@ -210,6 +210,66 @@ Calcule métricas de produtividade:
 *Processado pelo DiaryMCP em [timestamp]*
 ```
 
+## 📋 GERAÇÃO DE RESUMO COMPACTO (summary.json)
+
+### 🎯 PROPÓSITO CRÍTICO
+O `summary.json` é a **peça-chave** da otimização de tokens:
+- **Próximas 30 sessões** lerão APENAS este arquivo desta entrada
+- **Limite máximo: 1000 tokens** (~3000 caracteres)
+- **Contém TUDO essencial** para contexto futuro
+
+### 📝 Template do summary.json:
+```json
+{
+  "id": "2024-01-15T14-30-00",
+  "timestamp": "2024-01-15T14:30:00.123Z",
+  "compact_summary": "Implementou autenticação JWT com middleware personalizado, resolveu 3 bugs de CORS, configurou rate limiting básico",
+  "session_type": "feature",
+  "key_decisions": [
+    "Escolheu JWT over sessions por escalabilidade",
+    "Implementou refresh tokens com Redis cache",
+    "Decidiu usar middleware custom vs biblioteca pronta"
+  ],
+  "key_insights": [
+    "CORS deve ser configurado ANTES dos middlewares de auth",
+    "Redis connection pooling melhora performance 40%", 
+    "Rate limiting por IP + user_id previne abuse melhor"
+  ],
+  "main_files": [
+    "src/middleware/auth.js",
+    "src/controllers/authController.js", 
+    "src/config/redis.js",
+    "tests/auth.test.js"
+  ],
+  "branch": "feature/auth-system",
+  "tags": ["feature", "auth", "jwt", "security", "middleware", "redis"],
+  "productivity_score": 85,
+  "context_for_future": "Sistema de auth funcional mas falta implementar logout adequado, renovação de tokens automática, e testes E2E. CORS configurado mas pode dar problema em produção.",
+  "next_steps": [
+    "Implementar logout que invalida refresh token",
+    "Adicionar renovação automática de tokens",
+    "Escrever testes E2E completos"
+  ],
+  "connections_summary": "Conecta com sessões de setup do Redis (3 sessões atrás) e com trabalho de CORS (semana passada). Parte do epic de autenticação iniciado no início do mês.",
+  "warnings": [
+    "Rate limiting muito básico, vulnerable a ataques distribuídos",
+    "Secrets hardcoded em alguns lugares, mover para env"
+  ]
+}
+```
+
+### ⚡ REGRAS CRÍTICAS DO SUMMARY:
+1. **Ultra-conciso**: Cada campo tem limite rígido de caracteres
+2. **Zero gordura**: Só informação que futuras sessões PRECISAM
+3. **Linguagem técnica**: Direto ao ponto, sem floreios
+4. **Foco no futuro**: "O que quem continuar este trabalho precisa saber?"
+5. **Alertas importantes**: Riscos, dívida técnica, bloqueios
+
+### 📊 CÁLCULO DE TOKENS:
+- **Máximo permitido**: 1000 tokens
+- **Tamanho objetivo**: 600-800 tokens  
+- **Teste rápido**: ~3000 caracteres = ~1000 tokens
+
 ## 🔗 SISTEMA DE CONEXÕES
 
 ### Detectar Conexões Automáticas:
@@ -326,6 +386,7 @@ user_patterns:
 - [ ] Narrativas técnica e pessoal criadas
 - [ ] Tags automáticas aplicadas
 - [ ] Conexões detectadas e criadas
+- [ ] 🆕 **Summary.json criado** (OBRIGATÓRIO!)
 - [ ] Índices atualizados
 - [ ] Métricas calculadas
 - [ ] Arquivos salvos na estrutura correta
@@ -338,7 +399,8 @@ user_patterns:
 ├── context.json      # Contexto processado
 ├── tech.md          # Narrativa técnica
 ├── story.md         # Narrativa pessoal
-└── links.json       # Conexões detectadas
+├── links.json       # Conexões detectadas
+└── summary.json     # 🆕 RESUMO COMPACTO (essencial!)
 ```
 
 ---

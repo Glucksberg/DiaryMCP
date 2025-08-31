@@ -79,6 +79,11 @@ Adicionar (se não existir):
 2. "capture Primeira sessão de teste"
 3. "status" (para ver se funcionou)
 
+📊 SISTEMA DE OTIMIZAÇÃO:
+- Cada entrada gera um summary.json compacto
+- Próximas 30 sessões leem APENAS os resumos
+- Economia de 90%+ tokens em projetos grandes
+
 Para capturar via terminal: .diary/scripts/capture.sh "[nota]"
 ```
 
@@ -140,6 +145,11 @@ Criar arquivos JSON com estrutura mínima válida:
     "total_entries": 0,
     "total_sessions": 0,
     "last_capture": null
+  },
+  "optimization": {
+    "summary_system": "enabled",
+    "token_limit_per_summary": 1000,
+    "summary_retention_days": 30
   }
 }
 ```

@@ -368,6 +368,97 @@ Connection:
       type: object
       description: "Metadados específicos do tipo"
 
+## Summary - Resumo Compacto para Próximas Sessões
+Summary:
+  type: object
+  required: [id, timestamp, compact_summary, key_insights, context_for_future]
+  properties:
+    id:
+      type: string
+      pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}-\\d{2}-\\d{2}$"
+      description: "ID da entrada (mesmo da entrada principal)"
+      
+    timestamp:
+      type: string
+      format: date-time
+      description: "Timestamp da sessão"
+      
+    compact_summary:
+      type: string
+      maxLength: 300
+      description: "Resumo ultra-conciso da sessão"
+      
+    session_type:
+      type: string
+      enum: [feature, bug, refactor, docs, config, test, maintenance]
+      description: "Tipo de sessão"
+      
+    key_decisions:
+      type: array
+      items:
+        type: string
+        maxLength: 150
+      maxItems: 3
+      description: "Máximo 3 decisões técnicas principais"
+      
+    key_insights:
+      type: array
+      items:
+        type: string
+        maxLength: 150
+      maxItems: 3
+      description: "Máximo 3 insights importantes"
+      
+    main_files:
+      type: array
+      items:
+        type: string
+      maxItems: 5
+      description: "Máximo 5 arquivos principais modificados"
+      
+    branch:
+      type: string
+      description: "Branch onde ocorreu"
+      
+    tags:
+      type: array
+      items:
+        type: string
+      maxItems: 8
+      description: "Tags essenciais (máximo 8)"
+      
+    productivity_score:
+      type: number
+      minimum: 0
+      maximum: 100
+      description: "Score de produtividade"
+      
+    context_for_future:
+      type: string
+      maxLength: 250
+      description: "O que próximas sessões precisam saber"
+      
+    next_steps:
+      type: array
+      items:
+        type: string
+        maxLength: 100
+      maxItems: 3
+      description: "Próximos passos sugeridos"
+      
+    connections_summary:
+      type: string
+      maxLength: 200
+      description: "Resumo das principais conexões"
+      
+    warnings:
+      type: array
+      items:
+        type: string
+        maxLength: 100
+      maxItems: 2
+      description: "Alertas importantes (riscos, dívida técnica)"
+
 # =============================================================================
 # ESTRUTURAS DE ÍNDICES
 # =============================================================================
